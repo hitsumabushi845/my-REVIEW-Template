@@ -1,14 +1,23 @@
 {
-	"image": "vvakame/review:5.8",
-	"settings": {
-		"editor.wordWrap": "on"
+	"image": "vvakame/review:5.9",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"editor.wordWrap": "on"
+			},
+			"extensions": [
+				"yuqquu.review-starter-syntax-highlight",
+				"vvakame.vscode-prh-extention",
+				"taichi.vscode-textlint",
+				"atsushieno.language-review",
+				"tomoki1207.pdf",
+				"Gruntfuggly.todo-tree"
+			]
+		}
 	},
-	"extensions": [
-		"yuqquu.review-starter-syntax-highlight"
-	],
 	"postCreateCommand": [
-		"npm",
-		"ci",
+		"bash",
+		"./scripts/setup.sh"
 	],
 	"remoteUser": "root"
 }
