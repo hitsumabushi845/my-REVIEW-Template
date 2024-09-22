@@ -25,7 +25,7 @@ language: ja
 booktitle: {name: "Re:VIEWテンプレート", file-as: "reviewテンプレート"}
 
 # 著者名。「, 」で区切って複数指定できる
-aut: [{name: "TechBooster編", file-as: "techboosterヘン"}]
+aut: [{name: "P2O", file-as: "ピツオ"}]
 
 # 以下はオプション
 # 以下はオプション(autと同じように配列書式で複数指定可能)。
@@ -47,7 +47,7 @@ aut: [{name: "TechBooster編", file-as: "techboosterヘン"}]
 # a-csl, csl: 監修者
 # a-dsr, dsr: デザイナ
 # a-edt, edt: 編集者
-edt: ["mhidaka"]
+# edt: ["mhidaka"]
 # a-ill, ill: イラストレータ
 # a-lyr, lyr: 歌詞作成者
 # a-mdc, mdc: メタデータセットの一次的責任者
@@ -56,7 +56,7 @@ edt: ["mhidaka"]
 # a-oth, oth: その他
 # a-pht, pht: 撮影責任者
 # a-pbl, pbl: 出版社（発行所）
-pbl: TechBooster
+a-pbl: 山椒駆動開発
 # a-prt, prt: 印刷所
 # prt: TechBooster
 # a-red, red: 項目の枠組起草者
@@ -66,7 +66,7 @@ pbl: TechBooster
 # a-trc, trc: 筆記・タイプ作業者
 # a-trl, trl: 翻訳者
 
-# contact: 連絡先
+contact: "X(Twitter): @hitsumabushi845"
 
 # 刊行日(省略した場合は実行時の日付)
 date: 2022-12-31
@@ -77,7 +77,7 @@ date: 2022-12-31
 history: [["2022-12-31 コミックマーケット101版 v1.0.0"]]
 # 権利表記(配列で複数指定可)
 # rights: (C) 2016 Re:VIEW Developers
-rights: (C) 2017-2022 TechBooster
+rights: (C) 2023-2024 山椒駆動開発
 # description: 説明
 # subject: 短い説明用タグ(配列で複数指定可)
 # type: 書籍のカテゴリーなど(配列で複数指定可)
@@ -87,10 +87,10 @@ rights: (C) 2017-2022 TechBooster
 # coverage: 内容の範囲や領域(配列で複数指定可)
 
 # デバッグフラグ。nullでないときには一時ファイルをカレントディレクトリに作成し、削除もしない
-debug: null
+debug: false
 
 # 固有IDに使用するドメイン。省略した場合は時刻に基づくランダムUUIDが入る
-urnid: urn:uuid:https://github.com/TechBooster/ReVIEW-Template
+# urnid: urn:uuid:https://github.com/TechBooster/ReVIEW-Template
 #
 # ISBN。省略した場合はurnidが入る
 # isbn: null
@@ -174,15 +174,15 @@ colophon: true
 # font_ext: ["ttf", "woff", "otf"]
 
 # ソースコードハイライトを利用する (rouge,pygmentsには外部gemが必要)
-# highlight:
-#   html: "rouge"
-#   latex: "listings"
+highlight:
+  # html: "rouge"
+  latex: "listings"
 
 # カタログファイル名を指定する
 # catalogfile: catalog.yml
 
 # reファイルを格納するディレクトリ。省略した場合は以下 (. はカレントディレクトリを示す)
-# contentdir: .
+contentdir: main
 # pandoc2reviewを利用してMarkdownコンテンツを取り込むには、以下を有効にする
 # contentdir: _refiles
 
@@ -384,7 +384,7 @@ texdocumentclass: ["review-jsbook", "media=print,paper=b5,serial_pagination=true
 # texcommand: "uplatex"
 #
 # LaTeXのコマンドに渡すオプションを指定する
-# texoptions: "-interaction=nonstopmode -file-line-error -halt-on-error"
+texoptions: "-interaction=nonstopmode -file-line-error -halt-on-error"
 #
 # LaTeX用のdvi変換コマンドを指定する(dvipdfmx)
 # dvicommand: "dvipdfmx"
