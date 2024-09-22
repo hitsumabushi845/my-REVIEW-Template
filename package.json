@@ -37,6 +37,11 @@
     "grunt-contrib-clean": "^2.0.0",
     "grunt-shell": "^3.0.1",
     "js-yaml": "^3.13.1",
-    "load-grunt-tasks": "^4.0.0"
+    "load-grunt-tasks": "^4.0.0",
+    "textlint": "^13.3.3",
+    "textlint-plugin-review": "^0.4.1",
+    "textlint-rule-preset-ja-spacing": "^2.3.0",
+    "textlint-rule-preset-ja-technical-writing": "^8.0.0",
+    "textlint-rule-prh": "^5.3.0"
   }
 }
