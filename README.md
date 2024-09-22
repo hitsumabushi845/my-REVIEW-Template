@@ -1,3 +1,16 @@
+# my-REVIEW-Template
+
+@hitsumabushi845 が技術書を執筆するためのオレオレテンプレートリポジトリ
+
+## 初期設定
+
+テンプレートから新規リポジトリを作成した後、以下の対応を行うこと。
+
+- Repository Secret `GH_PAT` の作成
+  - tagpr による PR の作成のため、GitHub Personal Access Token を設定する。
+
+---
+original README.md
 # Re:VIEW Template
 
 このリポジトリはRe:VIEW用の書籍テンプレートです。Re:VIEWバージョン5.8に対応します。
