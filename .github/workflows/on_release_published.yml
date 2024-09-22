@@ -1,6 +1,9 @@
 name: Build Re:VIEW to make distribution file
 # The workflow is triggered on pushes to the repository.
-on: [push]
+on: 
+  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -11,11 +14,17 @@ jobs:
     - name: checkout source
       uses: actions/checkout@v3
     # Build Artifacts
-    - name: Build distribution file
-      uses: TechBooster/ReVIEW-build-artifact-action@master
+    - name: Build Book file
+      uses: hitsumabushi845/ReVIEW-build-artifact-action@master
+    # Fetch Book title
+    - name: Fetch book title
+      id: bookTitle
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq '.bookname' 'articles/config.yml'
     # Upload Distribution file
     - name: Upload distribution file to github artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Output documents
+        name: ${{ steps.bookTitle.outputs.result }}
         path: ./articles/*.pdf
