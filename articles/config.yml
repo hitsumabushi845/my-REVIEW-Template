@@ -384,7 +384,7 @@ texdocumentclass: ["review-jsbook", "media=print,paper=b5,serial_pagination=true
 # texcommand: "uplatex"
 #
 # LaTeXのコマンドに渡すオプションを指定する
-texoptions: "-interaction=nonstopmode -file-line-error -halt-on-error"
+texoptions: "-interaction=nonstopmode -file-line-error -halt-on-error -shell-escape"
 #
 # LaTeX用のdvi変換コマンドを指定する(dvipdfmx)
 # dvicommand: "dvipdfmx"
