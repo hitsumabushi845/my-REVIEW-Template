@@ -118,7 +118,7 @@ module ReVIEW
       body = lines.inject('') { |i, j| i + detab(j) + "\n" }
       args = 'breaklines=true'
       if lineno
-        args = "linenos=true,firstnumber=#{lineno},breaklines=true,frame=leftline,numbersep=5pt"
+        args = "linenos=true,firstnumber=#{lineno},breaklines=true,frame=leftline,numbersep=5pt,baselinestretch=0.8"
       end
       puts %Q(\\begin{minted}[#{args}]{#{lang}})
       print body
