@@ -12,7 +12,7 @@ jobs:
     # uses v3 Stable version
     # https://github.com/actions/checkout
     - name: checkout source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
     # Build Artifacts
     - name: Build Book file
       uses: hitsumabushi845/ReVIEW-build-artifact-action@master
@@ -24,7 +24,7 @@ jobs:
         cmd: yq '.bookname' 'articles/config.yml'
     # Upload Distribution file
     - name: Upload distribution file to github artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v5
       with:
         name: ${{ steps.bookTitle.outputs.result }}
         path: ./articles/*.pdf
