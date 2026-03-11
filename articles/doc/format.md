@@ -4,7 +4,7 @@ The document is a brief guide for Re:VIEW markup syntax.
 
 Re:VIEW is based on EWB of ASCII (now KADOKAWA), influenced RD and other Wiki system's syntax.
 
-This document explains about the format of Re:VIEW 5.1.
+This document explains about the format of Re:VIEW 5.8.
 
 ## Paragraph
 
@@ -112,7 +112,7 @@ You should add emply lines between Paragraphs and Itemize (same as Ordered and N
 ## Ordered Itemize
 
 Ordered itemize (ol in HTML)  uses ` 1. ...`, ` 2. ...`, ` 3. ...`.
-They aren't nested.
+Nesting output like `1-1` is not supported by default (nesting can be expressed using `//beginchild` - `//endchild`).
 
 Usage:
 
@@ -122,15 +122,24 @@ Usage:
  3. 3rd condition
 ```
 
-The value of Number is ignored.
-
-```
- 1. 1st condition
- 1. 2nd condition
- 1. 3rd condition
-```
-
 You must write one more space character at line head like itemize.
+
+Whether the numbers appear as described depends on the software that produces the output.
+
+* HTML (EPUB), TeX: The number will start from 1 regardless of the number entered.
+* IDGXML, text: The numbers will be output as described. Therefore, writing all numbers as "1." will produce strange results.
+
+In HTML (EPUB) and TeX builders, use `//olnum[number]` to change the first number. Note that the intermediate numbers cannot be changed.
+
+Usage:
+
+```
+//olnum[10]
+
+ 1. This number will be 10
+ 2. This number will be 11
+ 6. 12 in continuity, not 6 or 15.
+```
 
 ## Definition List
 
@@ -416,14 +425,62 @@ plot sin(x)
 //}
 ```
 
-You can use `graphviz`, `gnuplot`, `blockdiag`, `aafigure`, and `plantuml` as the command name.
+You can use `graphviz`, `gnuplot`, `blockdiag`, `aafigure`, `plantuml`, and `mermaid` as the command name.
 Before using these tools, you should installed them and configured path appropriately.
 
 * Graphviz ( https://www.graphviz.org/ ) : set path to `dot` command
 * Gnuplot ( http://www.gnuplot.info/ ) : set path to `gnuplot` command
 * Blockdiag ( http://blockdiag.com/ ) : set path to `blockdiag` command. Install ReportLab also to make a PDF
 * aafigure ( https://launchpad.net/aafigure ) : set path to `aafigure` command
-* PlantUML ( http://plantuml.com/ ) : set path to `java` command. place `plantuml.jar` on working folder
+* PlantUML ( http://plantuml.com/ ) : set path to `java` command. place `plantuml.jar` on working folder, `/usr/share/plantuml` or `/usr/share/java`.
+* Mermaid ( https://mermaid.js.org/ ) : see below
+
+### using Mermaid
+
+Mermaid is a JavaScript-based diagram tool that runs in a Web browser. For use with EPUB or LaTeX PDF, Re:VIEW calls the Web browser internally to create images. At this time, we have not confirmed that Mermaid works on any platforms other than Linux.
+
+1. Create `package.json` in your project (if you have an existing file, add the line `"playwright"...` to the `dependencies`).
+   ```
+   {
+     "name": "book",
+     "dependencies": {
+       "playwright": "^1.32.2"
+     }
+   }
+   ```
+2. Install Playwright library. If you don't have `npm`, set up [Node.js](https://nodejs.org/) first.
+   ```
+   npm install
+   ```
+3. Install [playwright-runner](https://github.com/kmuto/playwright-runner), a module that calls the Playwright library from Ruby.
+   ```
+   gem install playwright-runner
+   ```
+4. (Optional) Since EPUB cannot handle PDF, the images must be in SVG format; to convert them to SVG, you need the `pdftocairo` command included in [poppler](https://gitlab.freedesktop.org/poppler/poppler). It can be installed in Debian and its derivatives as follows:
+   ```
+   apt install poppler-utils
+   ```
+5. (Optional )By default, there will be white margins around the figure. To crop them, you need the `pdfcrop` command included in TeXLive, which can be installed in Debian and its derivatives as follows:
+   ```
+   apt install texlive-extra-utils
+   ```
+
+Adjust `config.yml`. The default values are as follows:
+
+```
+playwright_options:
+  playwright_path: "./node_modules/.bin/playwright"
+  selfcrop: true
+  pdfcrop_path: "pdfcrop"
+  pdftocairo_path: "pdftocairo"
+```
+
+- `playwright_path`: path of the `playwright` command.
+- `selfcrop`: use the default cropper of `playwright-runner`. The `pdfcrop` will not be needed, but there will be margins around it. Set to `false` if you can use `pdfcrop`.
+- `pdfcrop_path`: path of the `pdfcrop` command. Ignored if `selfcrop` is `true`.
+- `pdftocairo_path`: path of the `pdftocairo` command.
+
+The notation in Re:VIEW is `//graph[ID][mermaid][caption]` or `//graph[ID][mermaid]`. Based on this ID, `images/html/ID.svg` (for EPUB) or `images/latex/ID.pdf` (for LaTeX PDF) will be generated.
 
 ## Tables
 
@@ -512,6 +569,26 @@ Seeing is believing.
 
 You can use inline markup in quotations.
 
+Center-aligned paragraphs are represented by `//centering{ ~ //}` and right-aligned paragraphs by `//flushright{ ~ //}`.
+
+To include multiple paragraphs, separate them with a blank line.
+
+Usage:
+
+```
+//centering{
+This is
+
+center aligned.
+//}
+
+//flushright{
+This is
+
+right aligned.
+//}
+```
+
 ## Short column
 
 Some block commands are used for short column.
@@ -551,6 +628,7 @@ Usage:
 ```
 You can get the packages from support site for the book.@<fn>{site}
 You should get and install it before reading the book.
+
 //footnote[site][support site of the book: http://i.loveruby.net/ja/stdcompiler ]
 ```
 
@@ -571,6 +649,34 @@ And you cannot use footnote and footnotemark/footnotetext at the same time.
 Note that with this option, Re:VIEW use footnotemark and footnotetext instead of normal footnote.
 There are some constraints to use this option.
 You cannot use footnote and footnotemark/footnotetext at the same time.
+
+## Endnotes
+
+You can use `//endnote` to write endnotes.
+
+Usage:
+
+```
+You can get the packages from support site for the book.@<endnote>{site}
+You should get and install it before reading the book.
+
+//endnote[site][support site of the book: http://i.loveruby.net/ja/stdcompiler ]
+```
+
+`@<endnote>{site}` in source are replaced by endnote marks, and the phrase "support site of .."
+is stored for printing later.
+
+To print stored endnotes, place "`//printendnotes`" where you want to write down them (usually at the end of the chapter).
+
+```
+ ...
+
+==== Endnote
+
+//printendnotes
+```
+
+It is not possible to create an endnote that spans multiple chapters.
 
 ## Bibliography
 
@@ -641,7 +747,7 @@ If you'd like to assign a number like 'Equation 1.1`, specify the identifier and
 
 To reference this, use the inline command `@<eq>`.
 
-There is `@<m>{ ... }` for inline (see "Fence notation for inline commands" section also).
+There is `@<m>{ ... }` for inline. When writing long expressions, it is convenient to use fence notation (`@<m>$~$` or `@<m>|~|`) to avoid escaping. (see "Fence notation for inline commands" section also).
 
 Whether LaTeX formula is correctly displayed or not depends on the processing system. PDFMaker uses LaTeX internally, so there is no problem.
 
@@ -719,7 +825,7 @@ For example, to make SVG:
 math_format: imgmath
 imgmath_options:
   format: svg
-  pdfcrop_pixelize_cmd: "pdftocairo -svg -r 90 -f %p -l %p -singlefile %i %o"
+  pdfcrop_pixelize_cmd: "pdftocairo -%t -r 90 -f %p -l %p %i %o"
 ```
 
 By default, the command specified in `pdfcrop_pixelize_cmd` takes the filename of multi-page PDF consisting of one formula per page.
@@ -914,34 +1020,7 @@ Usage:
 
 ## Raw Data Block
 
-When you want to write non-Re:VIEW line, use `//raw` or `//embed`.
-
-### `//raw` block
-
-Usage:
-
-```
-//raw[|html|<div class="special">\nthis is a special line.\n</div>]
-```
-
-In above line, `html` is a builder name that handle raw data.
-You can use `html`, `latex`, `idgxml` and `top` as builder name.
-You can specify multiple builder names with separator `,`.
-`\n` is translated into newline(U+000A).
-
-Output:
-
-(In HTML:)
-
-```
-<div class="special">
-this is a special line.
-</div>
-```
-
-(In other formats, it is just ignored.)
-
-Note: `//raw` and `@<raw>` may break structured document easily.
+When you want to write non-Re:VIEW line, use `//embed` or `@<embed>`.
 
 ### `//embed` block
 
@@ -975,11 +1054,42 @@ this is a special line.
 
 (In other formats, it is just ignored.)
 
+For inline, use `@<embed>{|builder|raw string}`.
+
+### `//raw` block
+
+`//raw` and `@<raw>` is an old notation and should no longer be used (use it only if you want to avoid line breaks in IDGXML builder).
+
+Usage:
+
+```
+//raw[|html|<div class="special">\nthis is a special line.\n</div>]
+```
+
+In above line, `html` is a builder name that handle raw data.
+You can use `html`, `latex`, `idgxml` and `top` as builder name.
+You can specify multiple builder names with separator `,`.
+`\n` is translated into newline(U+000A).
+
+Output:
+
+(In HTML:)
+
+```
+<div class="special">
+this is a special line.
+</div>
+```
+
+(In other formats, it is just ignored.)
+
+Note: `//embed`, `@<embed>`, `//raw` and `@<raw>` may break structured document easily.
+
 ### Nested itemize block
 
 Re:VIEW itemize blocks basically cannot express nested items. Also, none of itemize blocks allow to contain another itemize block or paragraph/image/table/list.
 
-As a workaround, Re:VIEW 4.2 provides an experimental `//beginchild` and `//endchild`. If you want to include something in an itemize block, enclose it with `//beginchild` and `//endchild`. It is also possible to create a multiple nest.
+As a workaround, Re:VIEW provides `//beginchild` and `//endchild` since Re:VIEW 4.2. If you want to include something in an itemize block, enclose it with `//beginchild` and `//endchild`. It is also possible to create a multiple nest.
 
 ```
  * UL1
@@ -1062,9 +1172,11 @@ Output:
 @<tti>{FooClass}:: teletype (monospaced font) and italic
 @<ttb>{BarClass}:: teletype (monospaced font) and bold
 @<code>{a.foo(bar)}:: teletype (monospaced font) for fragments of code
-@<tcy>{}:: short horizontal text in vertical text
+@<tcy>{text}:: short horizontal text in vertical text
 @<ins>{sentence}:: inserted part (underline)
 @<del>{sentence}:: deleted part (strike through)
+@<sup>{text}:: superscript
+@<sub>{text}:: subscript
 ```
 
 ### References
@@ -1084,7 +1196,7 @@ Output:
 ### Other inline commands
 
 ```
-@<ruby>{Matsumoto, Matz}:: ruby markups
+@<ruby>{Matsumoto,Matz}:: ruby markups
 @<br>{}::  linebreak in paragraph
 @<uchar>{2460}:: Unicode code point
 @<href>{http://www.google.com/, google}:: hyper link(URL)
@@ -1092,8 +1204,8 @@ Output:
 @<m>{a + \alpha}:: TeX inline equation
 @<w>{key}:: expand the value corresponding to the key.
 @<wb>{key}:: expand the value corresponding to the key with bold style.
-@<raw>{|html|<span>ABC</span>}:: inline raw data inline. `\}` is `}`, `\\` is `\`, and `\n` is newline.
 @<embed>{|html|<span>ABC</span>}:: inline raw data inline. `\}` is `}` and `\\` is `\`.
+@<raw>{|html|<span>ABC</span>}:: inline raw data inline. `\}` is `}`, `\\` is `\`, and `\n` is newline. (deprecated)
 @<idx>{string}:: output a string and register it as an index. See makeindex.md.
 @<hidx>{string}:: register a string as an index. A leveled index is expressed like `parent<<>>child`
 @<balloon>{abc}:: inline balloon in code block. For example, `@<balloon>{ABC}` produces `←ABC`. This may seem too simple. To decorate it, modify the style sheet file or override a function by `review-ext.rb`
