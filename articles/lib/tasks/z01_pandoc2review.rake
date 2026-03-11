@@ -28,6 +28,7 @@ def make_mdre(ch, p2r, path)
   elsif File.exist?(ch.sub(/\.re\Z/, '.md')) # md file
     system("#{p2r} #{ch.sub(/\.re\Z/, '.md')} > #{path}/#{ch}")
   end
+  sh "review-preproc -r --tabwidth=2 #{File.join(path, ch)}"
 end
 
 def yaml_load_file_compatible(file)

@@ -1,10 +1,8 @@
-"use strict";
-
 let fs = require("fs");
 let yaml = require("js-yaml");
 
 const articles = "articles";
-const bookConfig = yaml.safeLoad(fs.readFileSync(`${articles}/config.yml`, "utf8"));
+const bookConfig = yaml.load(fs.readFileSync(`${articles}/config.yml`, "utf8"));
 
 const reviewPrefix = process.env["REVIEW_PREFIX"] || "bundle exec ";
 const reviewPostfix = process.env["REVIEW_POSTFIX"] || "";             // REVIEW_POSTFIX="-peg" npm run pdf とかするとPEGでビルドできるよ
@@ -42,7 +40,7 @@ module.exports = grunt => {
 						cwd: articles,
 					}
 				},
-				command: `${reviewPreproc} -r --tabwidth=2 ${reviewContentDir}/*.re`
+				command: `${reviewContentDir === '_refiles' ? "echo 'skip preprocess'" : `${reviewPreproc} -r --tabwidth=2 ${reviewContentDir}/*.re`}`
 			},
 			compile2text: {
 				options: {
