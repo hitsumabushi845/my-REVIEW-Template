@@ -1,19 +1,18 @@
-#!/bin/bash -xe
+#!/bin/bash
 
 set -eux
-npm ci
+
+apt-get update && apt-get install -y \
+build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev python3-pip
+
 bundle install
 rm -rf node_modules
 # --unsafe-perm はrootでの実行時(= docker環境)で必要 非root時の挙動に影響なし
 npm install --unsafe-perm
 
-# install python3
-apt-get update -y
-apt-get install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev -y
-apt-get install python3 -y
-apt-get install python3-pip -y
 pip install --break-system-packages pygments
 
-# install yq
-wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
-chmod +x /usr/bin/yq
+VERSION="v4.52.5"
+PLATFORM="linux_arm64"
+
+wget https://github.com/mikefarah/yq/releases/download/${VERSION}/yq_${PLATFORM}.tar.gz -O - | tar zxf - ./yq_${PLATFORM} && mv yq_${PLATFORM} /usr/local/bin/yq 
