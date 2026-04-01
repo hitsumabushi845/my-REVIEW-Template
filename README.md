@@ -9,6 +9,21 @@
 - Repository Secret `GH_PAT` の作成
   - tagpr による PR の作成のため、GitHub Personal Access Token を設定する。
 
+## Docker を使った PDF ビルド
+
+Docker Compose を使って PDF をビルドできます。
+`docker compose up --build` は初回ビルド後、`articles/` 内のファイル変更を検知して自動で PDF を再生成します。
+
+```
+docker compose up --build
+```
+
+### 電子版の設定でビルド
+
+```
+REVIEW_CONFIG_FILE=config-ebook.yml docker compose up --build
+```
+
 ---
 original README.md
 # Re:VIEW Template

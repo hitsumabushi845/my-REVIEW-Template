@@ -1,0 +1,11 @@
+.git
+node_modules
+.sass-cache
+*.pdf
+articles/*.pdf
+articles/*.epub
+articles/*.html
+articles/*.xml
+articles/*.txt
+draft-articles
+README.md
