@@ -1,0 +1,77 @@
+name: Build Re:VIEW on Pull Request
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "articles/**"
+      - ".github/workflows/on_pull_request.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Build Book file
+        uses: hitsumabushi845/ReVIEW-build-artifact-action@1ceb7e19d648833947f6c3f0348758300bb283ac
+        with:
+          local_pip_packages: "./pygments-snowflake-lexers,./pygments-wit-lexer"
+      - name: Fetch book title
+        id: bookTitle
+        uses: mikefarah/yq@0f4fb8d35ec1a939d78dd6862f494d19ec589f19 # v4.52.5
+        with:
+          cmd: yq '.bookname' 'articles/config.yml'
+      - name: Upload color PDF
+        id: upload-color
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          path: ./articles/${{ steps.bookTitle.outputs.result }}.pdf
+          archive: false
+          retention-days: 7
+      - name: Upload grayscale PDF
+        id: upload-grayscale
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          path: ./articles/${{ steps.bookTitle.outputs.result }}-GrayScale.pdf
+          archive: false
+          retention-days: 7
+      - name: Comment artifact links on PR
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        with:
+          script: |
+            const bookName = '${{ steps.bookTitle.outputs.result }}';
+            const colorUrl = '${{ steps.upload-color.outputs.artifact-url }}';
+            const grayscaleUrl = '${{ steps.upload-grayscale.outputs.artifact-url }}';
+            const marker = '<!-- pdf-build-comment -->';
+            const builtAt = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+            const body = `${marker}\n## :book: PDF Build Complete\n\n` +
+              `| Version | Link |\n` +
+              `|---------|------|\n` +
+              `| Color | [${bookName}.pdf](${colorUrl}) |\n` +
+              `| GrayScale | [${bookName}-GrayScale.pdf](${grayscaleUrl}) |\n\n` +
+              `> :eyes: PDFファイルをブラウザで直接プレビューできます\n\n` +
+              `Last built: ${builtAt} (JST)`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
