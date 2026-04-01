@@ -1,6 +1,6 @@
 name: Build Re:VIEW to make distribution file
 # The workflow is triggered on pushes to the repository.
-on: 
+on:
   workflow_dispatch:
   release:
     types: [published]
@@ -9,22 +9,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # uses v3 Stable version
-    # https://github.com/actions/checkout
-    - name: checkout source
-      uses: actions/checkout@v5
-    # Build Artifacts
-    - name: Build Book file
-      uses: hitsumabushi845/ReVIEW-build-artifact-action@master
-    # Fetch Book title
-    - name: Fetch book title
-      id: bookTitle
-      uses: mikefarah/yq@master
-      with:
-        cmd: yq '.bookname' 'articles/config.yml'
-    # Upload Distribution file
-    - name: Upload distribution file to github artifacts
-      uses: actions/upload-artifact@v5
-      with:
-        name: ${{ steps.bookTitle.outputs.result }}
-        path: ./articles/*.pdf
+      # uses v3 Stable version
+      # https://github.com/actions/checkout
+      - name: checkout source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      # Build Artifacts
+      - name: Build Book file
+        uses: hitsumabushi845/ReVIEW-build-artifact-action@master
+      # Fetch Book title
+      - name: Fetch book title
+        id: bookTitle
+        uses: mikefarah/yq@0f4fb8d35ec1a939d78dd6862f494d19ec589f19 # v4.52.5
+        with:
+          cmd: yq '.bookname' 'articles/config.yml'
+      # Upload Distribution file
+      - name: Upload distribution file to github artifacts
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: ${{ steps.bookTitle.outputs.result }}
+          path: ./articles/*.pdf
