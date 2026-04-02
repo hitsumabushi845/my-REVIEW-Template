@@ -21,3 +21,12 @@ texdocumentclass:
 # texdocumentclass: ["review-jsbook", "media=ebook,paper=a5,serial_pagination=true,openany,fontsize=9pt,baselineskip=13pt,line_length=38zw,number_of_lines=37,head_space=15mm,headsep=3mm,headheight=5mm,footskip=10mm"]
 
 texstyle: ["reviewmacro-ebook"]
+
+# backcover を設定する場合はここに設定を追加する
+# TechBooster Re:VIEW-Template独自設定
+techbooster:
+  # 表紙および裏表紙を実寸ではなく仕上がりサイズにリサイズするか
+  # texdocumentclassでcover_fit_page=trueを付けるのと同じ
+  # cover_fit_page: true
+  # 裏表紙画像指定。画像はimages/から探索される
+  # backcoverimage: backcover.jpg
