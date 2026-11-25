@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to upload assets to the release
     steps:
       # uses v3 Stable version
       # https://github.com/actions/checkout
@@ -28,3 +30,10 @@ jobs:
         with:
           name: ${{ steps.bookTitle.outputs.result }}
           path: ./articles/*.pdf
+      # Upload Distribution file to the release (only when triggered by a release)
+      - name: Upload distribution file to release assets
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG_NAME" ./articles/*.pdf --clobber
