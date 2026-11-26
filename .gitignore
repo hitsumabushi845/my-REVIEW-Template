@@ -1,7 +1,12 @@
 node_modules/
 Gemfile.lock
 *.pdf
+!articles/images/*.pdf
 .sass-cache/
+
+# macOS のフォルダ設定と Python のキャッシュ
+.DS_Store
+__pycache__/
 
 articles/*.pdf
 articles/*.epub
@@ -10,3 +15,6 @@ articles/*.html
 articles/*.xml
 articles/*.txt
 articles/_refiles/
+
+# extractbb が画像ごとに作る bounding box。ビルドのたびに作り直される
+*.xbb
