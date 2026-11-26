@@ -1,5 +1,5 @@
 {
-	"image": "vvakame/review:5.9",
+	"image": "hitsumabushi845/review:5.11",
 	"customizations": {
 		"vscode": {
 			"settings": {

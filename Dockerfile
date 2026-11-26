@@ -1,4 +1,4 @@
-FROM vvakame/review:5.9
+FROM hitsumabushi845/review:5.11
 
 WORKDIR /book
 
